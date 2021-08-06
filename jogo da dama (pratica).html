@@ -1,0 +1,120 @@
+<canvas id="canvas" width="402" height="402"></canvas>
+
+<script>
+var M = new Array(8);
+
+for(var i = 0; i < 8; i++){
+	M[i] = new Array(8);
+}
+
+M = [[0, 2, 0, 2, 0, 2, 0, 2],
+	 [2, 0, 2, 0, 2, 0, 2, 0],
+	 [0, 2, 0, 2, 0, 2, 0, 2],
+	 [1, 0, 1, 0, 1, 0, 1, 0],
+	 [0, 1, 0, 1, 0, 1, 0, 1],
+	 [3, 0, 3, 0, 3, 0, 3, 0],
+	 [0, 3, 0, 3, 0, 3, 0, 3],
+	 [3, 0, 3, 0, 3, 0, 3, 0]];
+	
+var player, playerAnt;
+
+var Tabuleiro = function(M){
+	for(var i = 0; i < 8; i++){
+		for(var j = 0; j < 8; j++){
+			if(M[i][j] == 0){
+				Quadrado(i, j, "white");
+			}else{
+				Quadrado(i, j, "black");
+			}
+			
+			if(M[j][i] == 2){
+				Peca(i, j, "red");
+			}if(M[j][i] == 3){
+				Peca(i, j, "green");
+			}
+		}
+	}
+}
+
+var Quadrado = function(i, j, cor){
+	tam = 50;
+	var canvas = document.getElementById("canvas");
+	var c = canvas.getContext("2d");
+	
+	c.lineWidth="2";
+	c.strokeStyle="gray";
+	c.rect(tam*i,tam*j,tam,tam);
+	c.stroke();
+	c.fillStyle = cor;
+	c.fillRect(tam*i,tam*j,tam,tam);
+}
+
+var Peca = function(i, j, cor){
+	tam = 50;
+	var canvas = document.getElementById("canvas");
+	var c = canvas.getContext("2d");
+	
+	c.beginPath();
+	c.arc(tam*i + 25, tam*j + 25, 15, 0, 2*Math.PI);
+	c.lineWidth = 2;
+	c.fillStyle = cor;
+	c.stroke();
+	c.fill();
+}
+
+var Regras = function(M, i1, j1, i2, j2, player, playerAnt){
+	if(M[j2][i2] != 1){ // Verifica se a casa é branca.
+		return false;
+	}
+	
+	if(player == playerAnt){ // Verifica se os jogadores estão jogando intercaladamente.
+		return false;
+	}
+	
+	if((player == 2) && ((Math.abs(i2 - i1) != 1) || ((j2 - j1) != 1))){ // Verifica se o jogador vermelho está movendo para baixo.
+		return false;
+	}
+	
+	if((player == 3) && ((Math.abs(i2 - i1) != 1) || ((j1 - j2) != 1))){ // Verifica se o jogador verde está movendo para cima.
+		return false;
+	}
+	
+	return true;
+}
+
+Tabuleiro(M);
+
+canvas.onmousedown = function(evento1) {
+	
+	var x1 = evento1.pageX - canvas.offsetLeft;
+	var y1 = evento1.pageY - canvas.offsetTop;
+	
+	var i1 = parseInt(x1/50);
+	var j1 = parseInt(y1/50);
+		
+	Peca(i1,j1,"gray");
+	
+	player = M[j1][i1];
+	
+	canvas.onmouseup = function(evento2) 
+	{
+		var x2 = evento2.pageX - canvas.offsetLeft;
+		var y2 = evento2.pageY - canvas.offsetTop;
+		
+		var i2 = parseInt(x2/50);
+		var j2 = parseInt(y2/50);
+		
+		if(Regras(M, i1, j1, i2, j2, player, playerAnt) == true)
+		{	
+			M[j2][i2] = M[j1][i1];
+			M[j1][i1] = 1;
+			
+			playerAnt = player;
+		}
+		
+		Tabuleiro(M);
+		
+	}
+	
+}
+</script>

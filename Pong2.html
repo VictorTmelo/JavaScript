@@ -1,0 +1,212 @@
+
+<canvas id = "fundo" width = "800" height = "400"></canvas>
+
+<script>
+
+var TECLA_W = 87;
+
+var TECLA_S = 83;
+
+window.onload = function inicia(){
+
+var fundo;
+var ctx;
+const velocidadeBarra = 6;
+
+var pontuacaoP1 = 0;
+var pontuacaoP2 = 0;
+
+var BolaX = -1;
+var BolaY = 1;
+var velocidadeBola = 14;
+
+
+
+fundo = document.getElementById("fundo");
+ctx = fundo.getContext("2d");
+
+
+var nasceBolaX = fundo.width/2-10;
+var nasceBolaY = fundo.height/2-10;
+
+var nasceP1x = 10;
+var nasceP1y = fundo.height/2 - 45;
+
+var nasceP2x = fundo.width - 30;
+var nasceP2y = fundo.height/2 - 45;
+
+setInterval(jogo, 50);
+
+
+function jogo(){
+
+
+
+ctx.fillStyle= "black";
+ctx.fillRect(0,0,fundo.width,fundo.height);
+
+
+
+//DESENHOS ABAIXO
+
+//Fazendo a bola
+
+function desenho(){
+
+
+movimentaBola();
+
+ctx.fillStyle = "red";
+ctx.fillRect(nasceBolaX,nasceBolaY,20,20);
+
+
+//Fazendo o P1
+
+ctx.fillStyle = "blue";
+ctx.fillRect(nasceP1x,nasceP1y,20,90);
+
+
+//Fazendo o P2
+
+ctx.fillStyle = "blue";
+ctx.fillRect(nasceP2x,nasceP2y,20,90);
+
+
+
+//Pontuacoes
+
+ctx.fillStyle = "white"
+ctx.font = "25px Arial";
+ctx.fillText("Jogador 1: " + pontuacaoP1, 50,20)
+ctx.fillText("Jogador 2: " + pontuacaoP2, 620,20)
+
+
+
+}
+
+//Movimentação Barras
+
+onkeydown = function(e){
+
+  var tecla = e.keyCode;
+
+     if(tecla == TECLA_W && nasceP1y > 0){
+
+      nasceP1y-=velocidadeBarra;
+
+        
+     }
+
+      if(tecla == TECLA_S && nasceP1y < fundo.height - 90){
+
+      nasceP1y+=velocidadeBarra;
+
+        
+     }
+
+
+     if(tecla == 38 && nasceP2y > 0){
+
+      nasceP2y-=velocidadeBarra;
+
+        
+     }
+
+      if(tecla == 40 && nasceP2y < fundo.height - 90){
+
+      nasceP2y+=velocidadeBarra;
+
+        
+     }
+
+}
+
+
+
+
+//Movimentação Bola
+
+
+function movimentaBola(){
+
+
+  if(nasceBolaX <= nasceP1x + 20 && nasceBolaY + 20 >= nasceP1y && nasceBolaY <= nasceP1y + 90){
+
+    BolaX = 1;  
+     
+  }
+
+  if(nasceBolaX >= nasceP2x - 20 && nasceBolaY + 20 >= nasceP2y && nasceBolaY <= nasceP2y + 90){
+
+    BolaX = -1;
+      
+     
+  }
+
+  if(nasceBolaY <= 0){
+ 
+        BolaY = 1;
+
+  }
+
+  if(nasceBolaY >= fundo.height - 20){
+ 
+        BolaY = -1;
+
+  }
+
+nasceBolaX+= BolaX * velocidadeBola;
+nasceBolaY+= BolaY * velocidadeBola;
+
+
+
+    if(nasceBolaX < nasceP1x - 20){
+
+       pontuacaoP2++;
+       reinicia();
+    }
+
+  else if(nasceBolaX > nasceP2x + 20){
+
+      pontuacaoP1++;
+      reinicia();
+    }
+
+
+
+
+
+}
+
+function reinicia(){
+
+  
+
+
+   nasceP1y = fundo.height/2-45;
+   nasceP2y = fundo.height/2-45;
+
+   nasceBolaX = fundo.width/2-10;
+   nasceBolaY = fundo.height/2-10;
+
+  
+}
+
+
+
+
+desenho();
+
+
+}
+
+
+
+
+}
+
+</script>
+
+
+
+ 
